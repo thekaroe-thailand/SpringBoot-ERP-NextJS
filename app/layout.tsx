@@ -24,12 +24,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+      <head>
+        <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-      <link rel="stylesheet"
-        href="https://fonts.googlepis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" />
-
+        <link rel="stylesheet"
+          href="https://fonts.googlepis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

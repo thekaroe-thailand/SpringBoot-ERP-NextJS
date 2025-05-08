@@ -46,3 +46,75 @@
     transition-all duration-300 hover:from-indigo-500 hover:to-purple-500
     active:from-indigo-700 active:to-purple-700;
 }
+
+/* sidebar */
+.sidebar {
+  @apply h-screen w-72 bg-gradient-to-b from-purple-900 via-blue-900 
+    to-black text-white p-6 shadow-2xl;
+}
+
+.sidebar-container {
+  @apply flex flex-col gap-4;
+}
+
+.sidebar-title {
+  @apply text-2xl font-bold mb-6 text-center border border-b-1 border-b-gray-400  
+    border-t-0 border-l-0 border-r-0
+}
+
+.sidebar-title h1 {
+  @apply text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r
+    from-purple-300 to-pink-400;
+}
+
+.sidebar-title .btn-edit {
+  @apply bg-blue-600/80 text-white px-4 py-2 rounded-md text-base font-medium;
+}
+
+.sidebar-title .btn-logout {
+  @apply bg-red-600/80 text-white px-4 py-2 rounded-md text-base font-medium;
+}
+
+.sidebar-nav-list {
+  @apply space-y-3;
+}
+
+.sidebar-nav-item {
+  @apply hover:bg-white/20 rounded-lg p-2 transition-colors;
+}
+
+.sidebar-nav-link {
+  @apply flex items-center gap-2;
+}
+
+.button {
+  @apply bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg py-2 px-4;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
