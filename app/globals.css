@@ -79,12 +79,12 @@
   @apply space-y-3;
 }
 
-.sidebar-nav-item {
-  @apply hover:bg-white/20 rounded-lg p-2 transition-colors;
+.sidebar-nav-link {
+  @apply flex items-center gap-2 cursor-pointer hover:bg-white/30 p-2 rounded-lg;
 }
 
-.sidebar-nav-link {
-  @apply flex items-center gap-2;
+.sidebar-nav-link-active {
+  @apply flex items-center gap-2 cursor-pointer bg-white/30 p-2 rounded-lg transition-colors;
 }
 
 .button {
