@@ -96,6 +96,10 @@
   @apply bg-green-600/80 text-white px-4 py-2 rounded-md text-base font-medium;
 }
 
+.table {
+  @apply w-full;
+}
+
 .table-container {
   @apply w-full overflow-x-auto shadow-lg rounded-lg;
 }
@@ -113,7 +117,7 @@
 }
 
 .table td {
-  @apply px-6 py-4 text-sm text-gray-700 whitespace-nowrap;
+  @apply px-6 py-4 text-sm text-gray-700 whitespace-nowrap bg-white;
 }
 
 .table-action-btn {
