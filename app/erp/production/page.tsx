@@ -6,6 +6,7 @@ import { Config } from "@/app/Config"
 import Swal from "sweetalert2"
 import Modal from "../components/Modal"
 import { ProductionInterface } from "@/app/interface/ProductionInterface"
+import Link from 'next/link';
 
 export default function Productlion() {
     const [productions, setProductions] = useState<ProductionInterface[]>([]);
@@ -134,10 +135,10 @@ export default function Productlion() {
                     <i className="fas fa-plus mr-2"></i>
                     เพิ่มรายการสินค้า
                 </button>
-                <button className="button">
+                <Link href="/erp/material" className="button">
                     <i className="fas fa-box mr-2"></i>
                     วัตถุดิบ
-                </button>
+                </Link>
             </div>
 
             <div className="table-container">
