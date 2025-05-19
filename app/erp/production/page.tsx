@@ -156,10 +156,10 @@ export default function Productlion() {
                                 <td>{production.name}</td>
                                 <td>{production.detail}</td>
                                 <td className="flex gap-2">
-                                    <button className="button">
+                                    <Link href={`/erp/formular/${production.id}`} className="button">
                                         <i className="fas fa-file-alt mr-2"></i>
                                         สูตร
-                                    </button>
+                                    </Link>
                                     <button className="button">
                                         <i className="fas fa-check mr-2"></i>
                                         บันทึกการผลิต

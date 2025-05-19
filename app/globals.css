@@ -165,7 +165,7 @@
   @apply block mb-2 text-sm font-medium text-gray-400;
 }
 
-.modal-body input {
+.modal-body input, select {
   @apply w-full bg-gray-800/50 border border-gray-700/50 rounded-md p-2 text-gray-200;
 }
 
