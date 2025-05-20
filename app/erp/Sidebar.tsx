@@ -15,7 +15,19 @@ export default function Sidebar() {
     useEffect(() => {
         fetchData();
         setCurrentPath(localStorage.getItem("currentPath") || '')
+        setDefaultSidebar();
     }, []);
+
+    const setDefaultSidebar = () => {
+        const sidebar = localStorage.getItem('sidebar');
+        const sidebarElement = document.querySelector('.sidebar') as HTMLElement;
+
+        if (sidebar == 'true') {
+            sidebarElement.classList.add('hidden');
+        } else {
+            sidebarElement.classList.remove('hidden');
+        }
+    }
 
     const fetchData = async () => {
         try {
@@ -71,8 +83,22 @@ export default function Sidebar() {
         return currentPath == path ? 'sidebar-nav-link-active' : 'sidebar-nav-link';
     }
 
+    const toggleSidebar = () => {
+        const sidebar = document.querySelector('.sidebar') as HTMLElement;
+
+        if (sidebar) {
+            if (sidebar.classList.contains('hidden')) {
+                sidebar.classList.remove('hidden');
+                localStorage.setItem('sidebar', 'false');
+            } else {
+                sidebar.classList.add('hidden');
+                localStorage.setItem('sidebar', 'true');
+            }
+        }
+    }
+
     return (
-        <>
+        <div className="flex items-start">
             <div className="sidebar">
                 <div className="sidebar-container">
                     <div className="sidebar-title">
@@ -150,6 +176,9 @@ export default function Sidebar() {
                     </nav>
                 </div>
             </div>
-        </>
+            <button className="text-white ms-3 cursor-pointer" onClick={toggleSidebar}>
+                <i className="fa fa-bars"></i>
+            </button>
+        </div>
     )
 }

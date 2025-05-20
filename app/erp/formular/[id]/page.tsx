@@ -11,7 +11,7 @@ import Modal from "../../components/Modal"
 import { MaterialInterface } from "@/app/interface/Materialinterface"
 
 export default function Formular() {
-    const [formular, setFormular] = useState<FormularInterface[]>([]);
+    const [formulars, setFormulars] = useState<FormularInterface[]>([]);
     const [production, setProduction] = useState<ProductionInterface | null>(null);
     const [showModal, setShowModal] = useState(false);
     const [materials, setMaterials] = useState<MaterialInterface[]>([]);
@@ -23,6 +23,7 @@ export default function Formular() {
     useEffect(() => {
         fetchProduction();
         fetchMaterials();
+        fetchFormulars();
     }, [])
 
     const fetchProduction = async () => {
@@ -49,6 +50,24 @@ export default function Formular() {
 
             if (response.status == 200) {
                 setMaterials(response.data);
+                setMaterialId(response.data[0].id);
+            }
+        } catch (err: any) {
+            Swal.fire({
+                title: 'error',
+                text: err,
+                icon: 'error'
+            })
+        }
+    }
+
+    const fetchFormulars = async () => {
+        try {
+            const url = Config.apiUrl + '/api/formulars/' + id;
+            const response = await axios.get(url);
+
+            if (response.status == 200) {
+                setFormulars(response.data);
             }
         } catch (err: any) {
             Swal.fire({
@@ -65,14 +84,21 @@ export default function Formular() {
 
     const closeModal = () => {
         setShowModal(false);
+
+        setQty(0);
+        setUnit('');
     }
 
     const handleSave = async () => {
         try {
             const url = Config.apiUrl + '/api/formulars'
             const payload = {
-                productionId: production?.id,
-                materialId: materialId,
+                production: {
+                    id: production?.id
+                },
+                material: {
+                    id: materialId
+                },
                 qty: qty,
                 unit: unit
             }
@@ -80,6 +106,34 @@ export default function Formular() {
 
             if (response.status == 200) {
                 closeModal();
+                fetchFormulars();
+            }
+        } catch (err: any) {
+            Swal.fire({
+                title: 'error',
+                text: err,
+                icon: 'error'
+            })
+        }
+    }
+
+    const handleDelete = async (id: number) => {
+        try {
+            const confirm = await Swal.fire({
+                title: 'ยืนยันการลบ',
+                text: 'คุณต้องการลบส่วนผสมนี้หรือไม่',
+                icon: 'question',
+                showCancelButton: true,
+                showConfirmButton: true
+            })
+
+            if (confirm.isConfirmed) {
+                const url = Config.apiUrl + '/api/formulars/' + id;
+                const response = await axios.delete(url);
+
+                if (response.status == 200) {
+                    fetchFormulars();
+                }
             }
         } catch (err: any) {
             Swal.fire({
@@ -93,11 +147,41 @@ export default function Formular() {
     return (
         <div>
             <h1>สูตรการผลิต {production?.name}</h1>
-            <div className="flex gap-2 mt-3">
-                <button className="button-add" onClick={openModal}>
-                    <i className="fas fa-plus mr-2"></i>
-                    เพิ่มส่วนผสม
-                </button>
+            <div className="flex flex-col gap-2 mt-3">
+                <div>
+                    <button className="button-add" onClick={openModal}>
+                        <i className="fas fa-plus mr-2"></i>
+                        เพิ่มส่วนผสม
+                    </button>
+                </div>
+
+                <div className="table-container">
+                    <table className="table">
+                        <thead>
+                            <tr>
+                                <th>วัตถุดิบ</th>
+                                <th className="w-[100px]" style={{ textAlign: 'right' }}>จำนวน</th>
+                                <th className="w-[100px]">หน่วย</th>
+                                <th className="w-[50px]"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {formulars.map((formular) => (
+                                <tr key={formular.id}>
+                                    <td>{formular.material.name}</td>
+                                    <td className="text-right">{formular.qty}</td>
+                                    <td>{formular.unit}</td>
+                                    <td className="text-center">
+                                        <button className="table-action-btn table-delete-btn"
+                                            onClick={() => handleDelete(formular.id)}>
+                                            <i className="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
 
                 {showModal && (
                     <Modal title='เพิ่มส่วนผสม' onClose={closeModal}>
