@@ -160,10 +160,10 @@ export default function Productlion() {
                                         <i className="fas fa-file-alt mr-2"></i>
                                         สูตร
                                     </Link>
-                                    <button className="button">
+                                    <Link href={`/erp/production/log/${production.id}`} className="button">
                                         <i className="fas fa-check mr-2"></i>
                                         บันทึกการผลิต
-                                    </button>
+                                    </Link>
                                     <button className="button">
                                         <i className="fas fa-file-alt mr-2"></i>
                                         บันทึก loss
