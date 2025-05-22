@@ -164,10 +164,10 @@ export default function Productlion() {
                                         <i className="fas fa-check mr-2"></i>
                                         บันทึกการผลิต
                                     </Link>
-                                    <button className="button">
+                                    <Link href={`/erp/production/loss/${production.id}`} className="button">
                                         <i className="fas fa-file-alt mr-2"></i>
                                         บันทึก loss
-                                    </button>
+                                    </Link>
                                     <button className="table-action-btn table-edit-btn"
                                         onClick={() => handleEdit(production)}
                                     >
