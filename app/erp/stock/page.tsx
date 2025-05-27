@@ -6,6 +6,7 @@ import axios from "axios";
 import { useEffect, useState, useTransition } from "react";
 import Swal from "sweetalert2";
 import Modal from "../components/Modal";
+import { ProductionInterface } from "@/app/interface/ProductionInterface";
 
 export default function Stock() {
     const [stores, setStores] = useState<StoreInterface[]>([]);
@@ -14,10 +15,38 @@ export default function Stock() {
     const [name, setName] = useState<string>('');
     const [address, setAddress] = useState<string>('');
     const [remark, setRemark] = useState<string>('');
+    const [productions, setProductions] = useState<ProductionInterface[]>([]);
+    const [productionId, setProductionId] = useState<number>(0);
+
+    // modal import to stock
+    const [showModalImport, setShowModalImport] = useState(false);
+    const [totalProductionLog, setTotalProductionLog] = useState<number>(0);
+    const [totalProductionLoss, setTotalProductionLoss] = useState<number>(0);
+    const [totalProductionFree, setTotalProductionFree] = useState<number>(0);
 
     useEffect(() => {
         fetchStores();
+        fetchProductions();
     }, [])
+
+    const fetchProductions = async () => {
+        const url = Config.apiUrl + '/api/productions';
+
+        try {
+            const response = await axios.get(url);
+
+            if (response.status === 200) {
+                setProductions(response.data);
+                changeProduction(response.data[0].id);
+            }
+        } catch (error: any) {
+            Swal.fire({
+                icon: 'error',
+                title: 'error',
+                text: error.message
+            })
+        }
+    }
 
     const fetchStores = async () => {
         const url = Config.apiUrl + '/api/store';
@@ -112,6 +141,36 @@ export default function Stock() {
         setShowModal(true);
     }
 
+    const openModalImport = () => {
+        setShowModalImport(true);
+    }
+
+    const closeModalImport = () => {
+        setShowModalImport(false);
+    }
+
+    const changeProduction = async (id: number) => {
+        setProductionId(id);
+
+        try {
+            const url = Config.apiUrl + '/api/store/data-for-import/' + id;
+            const response = await axios.get(url);
+
+            if (response.status === 200) {
+                const data = response.data;
+                setTotalProductionLog(data.totalProductionLog ?? 0);
+                setTotalProductionLoss(data.totalProductionLoss ?? 0);
+                setTotalProductionFree(data.totalProductionLog ?? 0 - data.totalProductionLoss ?? 0);
+            }
+        } catch (error: any) {
+            Swal.fire({
+                icon: 'error',
+                title: 'error',
+                text: error.message
+            })
+        }
+    }
+
     return (
         <div>
             <h1 className="text-2xl font-bold">คลังสินค้า</h1>
@@ -141,6 +200,11 @@ export default function Stock() {
                                     <td>{store.remark}</td>
                                     <td>
                                         <div className="flex gap-1 justify-center">
+                                            <button onClick={() => openModalImport()}
+                                                className="table-edit-btn table-action-btn">
+                                                <i className="fa fa-plus mr-2"></i>
+                                                รับของเข้าสต็อก
+                                            </button>
                                             <button onClick={() => handleEdit(store)}
                                                 className="table-edit-btn table-action-btn">
                                                 <i className="fa fa-pencil"></i>
@@ -182,6 +246,58 @@ export default function Stock() {
                                 <div className="flex justify-end gap-2">
                                     <button type="button" onClick={() => setShowModal(false)}
                                         className="modal-btn modal-btn-cancel">
+                                        <i className="fas fa-times mr-2"></i>
+                                        ยกเลิก
+                                    </button>
+                                    <button type="submit" className="modal-btn modal-btn-submit">
+                                        <i className="fas fa-check mr-2"></i>
+                                        บันทึก
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </Modal>
+                )}
+
+                {showModalImport && (
+                    <Modal title='รับของเข้าสต้อก' onClose={closeModalImport}>
+                        <form>
+                            <div className="flex flex-col gap-2">
+                                <div>
+                                    <label>สินค้าที่จะนำเข้า</label>
+                                    <select className="input-field" value={productionId}
+                                        onChange={(e) => changeProduction(Number(e.target.value))}>
+                                        {productions.map((production) => (
+                                            <option key={production.id} value={production.id}>
+                                                {production.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label>จำนวนที่ผลิต</label>
+                                    <input type="number" value={totalProductionLog} className="input-field" readOnly disabled />
+                                </div>
+
+                                <div>
+                                    <label>เสียหาย</label>
+                                    <input type="number" value={totalProductionLoss} className="input-field" readOnly disabled />
+                                </div>
+
+                                <div>
+                                    <label>คงเหลือ</label>
+                                    <input type="number" value={totalProductionFree} className="input-field" readOnly disabled />
+                                </div>
+
+                                <div>
+                                    <label>รับของเข้าสต้อก</label>
+                                    <input type="number" className="input-field" />
+                                </div>
+
+                                <div className="flex justify-end gap-2">
+                                    <button type="button" className="modal-btn modal-btn-cancel"
+                                        onClick={closeModalImport}>
                                         <i className="fas fa-times mr-2"></i>
                                         ยกเลิก
                                     </button>
