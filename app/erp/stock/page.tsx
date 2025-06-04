@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import Modal from "../components/Modal";
 import { ProductionInterface } from "@/app/interface/ProductionInterface";
 import { StoreImportInterface } from "@/app/interface/StoreImportInterface";
+import { TransferStoreInterface } from "@/app/interface/TransferStoreInterface";
 
 export default function Stock() {
     const [stores, setStores] = useState<StoreInterface[]>([]);
@@ -40,6 +41,10 @@ export default function Stock() {
     const [transferCreatedAt, setTransferCreatedAt] = useState<Date>(new Date());
     const [fromStoreName, setFromStoreName] = useState<string>('');
     const [productionTransfer, setProductionTransfer] = useState<number>(0);
+
+    // modal history transfer
+    const [showModalHistoryTransfer, setShowModalHistoryTransfer] = useState(false);
+    const [transferStores, setTransferStores] = useState<TransferStoreInterface[]>([]);
 
     useEffect(() => {
         fetchStores();
@@ -284,9 +289,10 @@ export default function Stock() {
         openModalHistory(sotreId);
     }
 
-    const openModalTransfer = (fromStoreName: string) => {
+    const openModalTransfer = (fromStoreName: string, fromStoreId: number) => {
         setShowModalTransfer(true);
         setFromStoreName(fromStoreName);
+        setFromStoreId(fromStoreId);
     }
 
     const closeModalTransfer = () => {
@@ -299,14 +305,111 @@ export default function Stock() {
         setProductionTransfer(productions[0].id);
     }
 
+    const handleTransferStock = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        try {
+            const payload = {
+                fromStore: {
+                    id: fromStoreId
+                },
+                toStore: {
+                    id: toStoreId
+                },
+                production: {
+                    id: productionTransfer
+                },
+                quantity: qtyTransfer,
+                remark: remarkTransfer,
+                createdAt: transferCreatedAt.toISOString()
+            }
+            const url = Config.apiUrl + '/api/transfer-stock'
+            const response = await axios.post(url, payload);
+
+            if (response.status === 200) {
+                closeModalTransfer();
+
+                Swal.fire({
+                    title: 'สำเร็จ',
+                    text: 'โอนสินค้าสำเร็จ',
+                    icon: 'success',
+                    timer: 500
+                })
+            }
+        } catch (error: any) {
+            Swal.fire({
+                title: 'error',
+                icon: 'error',
+                text: error.message
+            })
+        }
+    }
+
+    const openModalHistoryTransfer = async () => {
+        setShowModalHistoryTransfer(true);
+        fetchDataTransferStore();
+    }
+
+    const closeModalHistoryTransfer = () => {
+        setShowModalHistoryTransfer(false);
+    }
+
+    const fetchDataTransferStore = async () => {
+        try {
+            const url = Config.apiUrl + '/api/transfer-stock';
+            const response = await axios.get(url);
+
+            if (response.status === 200) {
+                setTransferStores(response.data);
+            }
+        } catch (error: any) {
+            Swal.fire({
+                title: 'error',
+                icon: 'error',
+                text: error.message
+            })
+        }
+    }
+
+    const handleDeleteTransfer = async (id: number) => {
+        try {
+            const button = await Swal.fire({
+                title: 'ลบรายการโอน',
+                text: 'คุณต้องการลบรายการโอนใช่หรือไม่ ?',
+                icon: 'question',
+                showCancelButton: true,
+                showConfirmButton: true
+            })
+
+            if (button.isConfirmed) {
+                const url = Config.apiUrl + '/api/transfer-stock/' + id;
+                const response = await axios.delete(url);
+
+                if (response.status === 200) {
+                    fetchDataTransferStore();
+                }
+            }
+        } catch (error: any) {
+            Swal.fire({
+                title: 'error',
+                icon: 'error',
+                text: error.message
+            })
+        }
+    }
+
     return (
         <div>
             <h1 className="text-2xl font-bold">คลังสินค้า</h1>
             <div className="flex flex-col gap-2 mt-3">
-                <div>
+                <div className="flex gap-2">
                     <button className="button-add" onClick={openModal}>
                         <i className="fa-solid fa-plus me-2"></i>
                         เพิ่มรายการ
+                    </button>
+                    <button className="button-add" onClick={openModalHistoryTransfer}>
+                        <i className="fa-solid fa-exchange-alt me-2"></i>
+                        ประวัติการโอนสินค้า
                     </button>
                 </div>
 
@@ -329,7 +432,7 @@ export default function Stock() {
                                     <td>
                                         <div className="flex gap-1 justify-center">
                                             <button className="table-edit-btn table-action-btn"
-                                                onClick={() => openModalTransfer(store.name)}>
+                                                onClick={() => openModalTransfer(store.name, store.id)}>
                                                 <i className="fa fa-exchange-alt mr-2"></i>
                                                 โอนสินค้า
                                             </button>
@@ -493,7 +596,8 @@ export default function Stock() {
 
                 {showModalTransfer && (
                     <Modal title='โอนสินค้า' onClose={closeModalTransfer} size='xl'>
-                        <form className="flex flex-col gap-2">
+                        <form className="flex flex-col gap-2"
+                            onSubmit={(e) => handleTransferStock(e)}>
                             <div>
                                 <label>ต้นทาง</label>
                                 <input disabled type="text" value={fromStoreName} />
@@ -542,6 +646,44 @@ export default function Stock() {
                                 </button>
                             </div>
                         </form>
+                    </Modal>
+                )}
+
+                {showModalHistoryTransfer && (
+                    <Modal title='ประวัติการโอนสินค้า' onClose={closeModalHistoryTransfer} size='3xl'>
+                        <div className="table-container">
+                            <table className="table">
+                                <thead>
+                                    <tr>
+                                        <th>ต้นทาง</th>
+                                        <th>ปลายทาง</th>
+                                        <th>สินค้า</th>
+                                        <th>จำนวน</th>
+                                        <th>หมายเหตุ</th>
+                                        <th>วันที่</th>
+                                        <th className="w-[60px]"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {transferStores.map((transferStore) => (
+                                        <tr key={transferStore.id}>
+                                            <td>{transferStore.fromStore.name}</td>
+                                            <td>{transferStore.toStore.name}</td>
+                                            <td>{transferStore.production.name}</td>
+                                            <td>{transferStore.quantity}</td>
+                                            <td>{transferStore.remark}</td>
+                                            <td>{new Date(transferStore.createdAt).toLocaleDateString()}</td>
+                                            <td>
+                                                <button onClick={(e) => handleDeleteTransfer(transferStore.id)}
+                                                    className="table-delete-btn table-action-btn">
+                                                    <i className="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </Modal>
                 )}
             </div>
