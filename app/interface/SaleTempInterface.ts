@@ -5,5 +5,5 @@ export interface SaleTempInterface {
     production: ProductionInterface;
     price: number;
     userId: number;
-    quantity: number;
+    qty: number;
 }
