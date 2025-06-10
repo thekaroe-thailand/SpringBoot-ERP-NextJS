@@ -187,9 +187,17 @@
       hover:to-emerald-900 shadow-lg shadow-emerald-500/20 transition-all duration-200 ease-in-out;
 }
 
+input.input-money {
+  @apply text-right text-4xl font-bold border border-blue-400 bg-blue-400/20 text-blue-500;
+}
 
+input.input-discount {
+  @apply text-right text-4xl font-bold border border-yellow-400 bg-yellow-400/20 text-yellow-500;
+}
 
-
+input.return-money {
+  @apply text-right text-4xl font-bold border border-green-400 bg-green-400/20 text-green-500;
+}
 
 
 

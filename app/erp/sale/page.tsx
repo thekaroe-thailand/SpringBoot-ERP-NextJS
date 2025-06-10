@@ -15,6 +15,9 @@ export default function Sale() {
     const [showModalProductions, setShowModalProductions] = useState<boolean>(false);
     const [productions, setProductions] = useState<ProductionInterface[]>([]);
     const [saleTemps, setSaleTemps] = useState<SaleTempInterface[]>([]);
+    const [showModalEndSale, setShowModalEndSale] = useState<boolean>(false);
+    const [inputMoney, setInputMoney] = useState<number>(0);
+    const [returnMoney, setReturnMoney] = useState<number>(0);
 
     useEffect(() => {
         fetchProductions();
@@ -177,6 +180,67 @@ export default function Sale() {
         }
     }
 
+    const openModalEndSale = () => {
+        setShowModalEndSale(true);
+    }
+
+    const closeModalEndSale = () => {
+        setShowModalEndSale(false);
+    }
+
+    const handleChangeInputMoney = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.trim();
+        const inputMoneyValue = Number(value);
+
+        if (!isNaN(inputMoneyValue)) {
+            setInputMoney(inputMoneyValue);
+            setReturnMoney(inputMoneyValue - (total + discount));
+        }
+    }
+
+    const handleChangeDiscount = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value.trim();
+        const discountValue = Number(value);
+
+        if (!isNaN(discountValue)) {
+            setDiscount(discountValue);
+            setReturnMoney(inputMoney - (total + discountValue));
+        }
+    }
+
+    const handlePayFill = () => {
+        setReturnMoney(0);
+        setDiscount(0);
+        setInputMoney(total);
+    }
+
+    const handleEndSale = async () => {
+        const confirmButton = await Swal.fire({
+            title: 'ยืนยันการจบการขาย',
+            icon: 'question',
+            showCancelButton: true,
+            showConfirmButton: true
+        });
+
+        if (confirmButton.isConfirmed) {
+            const url = Config.apiUrl + '/api/SaleTemp/endSale';
+            const headers = getHeaders();
+            const payload = {
+                inputMoney: inputMoney,
+                discount: discount,
+                total: total
+            }
+            const response = await axios.post(url, payload, { headers });
+
+            if (response.status === 200) {
+                closeModalEndSale();
+                fetchDataSaleTemp();
+            }
+        } else {
+            openModalEndSale();
+        }
+    }
+
     return (
         <div className="container">
             <h1 className="text-2xl font-bold">ขายสินค้า</h1>
@@ -198,13 +262,13 @@ export default function Sale() {
                     </button>
                 </div>
 
-                <div className="flex gap-3">
-                    จำนวน
-                    <span className="font-bold">{saleTemps.length}</span>
-                    รายการ
-                    <span className="font-bold">{quantity}</span>
-                    ชิ้น
+                <div className="flex justify-end">
+                    <button className="button" onClick={openModalEndSale}>
+                        <i className="fa-solid fa-check mr-3"></i>
+                        จบการขาย
+                    </button>
                 </div>
+
                 <div className="table-container">
                     <table className="table">
                         <thead>
@@ -250,6 +314,14 @@ export default function Sale() {
                         </tbody>
                     </table>
                 </div>
+
+                <div className="flex gap-3">
+                    จำนวน
+                    <span className="font-bold">{saleTemps.length}</span>
+                    รายการ
+                    <span className="font-bold">{quantity}</span>
+                    ชิ้น
+                </div>
             </div>
 
             {showModalProductions && (
@@ -281,6 +353,55 @@ export default function Sale() {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                </Modal>
+            )}
+
+            {showModalEndSale && (
+                <Modal onClose={closeModalEndSale} title='จบการขาย' size='xl'>
+                    <div className="flex flex-col gap-2">
+                        <div>
+                            <div className="text-2xl font-bold text-right mb-2 text-gray-500">
+                                ยอดทั้งหมด
+                            </div>
+                            <input type="text" disabled value={total.toLocaleString()}
+                                className="text-right text-4xl font-bold" />
+                        </div>
+                        <div>
+                            <div className="text-2xl font-bold text-right mb-2 mt-5 text-gray-500">
+                                รับเงิน
+                            </div>
+                            <input type="text" value={inputMoney}
+                                onChange={(e) => handleChangeInputMoney(e)}
+                                className="input-money" />
+                        </div>
+                        <div>
+                            <div className="text-2xl font-bold text-right mb-2 text-gray-500">
+                                ส่วนลด
+                            </div>
+                            <input type="text"
+                                value={discount}
+                                onChange={(e) => handleChangeDiscount(e)}
+                                className="input-discount" />
+                        </div>
+                        <div>
+                            <div className="text-2xl font-bold text-right mb-2 text-gray-500">
+                                เงินทอน
+                            </div>
+                            <input type="text" disabled value={returnMoney.toLocaleString()}
+                                className="return-money" />
+                        </div>
+
+                        <div className="flex justify-end mt-5 gap-3">
+                            <button className="button text-2xl" onClick={handlePayFill}>
+                                <i className="fa-solid fa-check mr-3"></i>
+                                จ่ายพอดี
+                            </button>
+                            <button className="button text-2xl" onClick={handleEndSale}>
+                                <i className="fa-solid fa-check mr-3"></i>
+                                จบการขาย
+                            </button>
+                        </div>
                     </div>
                 </Modal>
             )}
