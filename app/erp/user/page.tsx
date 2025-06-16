@@ -5,20 +5,16 @@ import Swal from "sweetalert2"
 import { Config } from "@/app/Config"
 import Modal from "../components/Modal"
 import axios from "axios"
-
-interface User {
-    id: number,
-    email: string,
-    username: string
-}
+import { UserInterface } from "@/app/interface/UserInterface"
 
 export default function Page() {
-    const [users, setUsers] = useState<User[]>([]);
+    const [users, setUsers] = useState<UserInterface[]>([]);
     const [showModal, setShowModal] = useState(false);
-    const [editingUser, setEditingUser] = useState<User | null>(null);
+    const [editingUser, setEditingUser] = useState<UserInterface | null>(null);
     const [email, setEmail] = useState('');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [role, setRole] = useState('employee');
 
     useEffect(() => {
         fetchUsers();
@@ -45,15 +41,17 @@ export default function Page() {
 
         try {
             const url = editingUser
-                ? `${Config.apiUrl}/api/users/admin-edit-profile`
+                ? `${Config.apiUrl}/api/users/admin-update-profile`
                 : `${Config.apiUrl}/api/users/admin-create`
 
             const payload = {
                 id: editingUser?.id || null,
                 email: email,
                 username: username,
-                password: password || ''
+                password: password || '',
+                role: role
             }
+
             const headers = {
                 'Authorization': 'Bearer ' + localStorage.getItem(Config.tokenKey)
             }
@@ -84,7 +82,7 @@ export default function Page() {
         }
     }
 
-    const handleDelete = async (user: User) => {
+    const handleDelete = async (user: UserInterface) => {
         try {
             const result = await Swal.fire({
                 icon: 'warning',
@@ -121,12 +119,13 @@ export default function Page() {
         }
     }
 
-    const handleEdit = (user: User) => {
+    const handleEdit = (user: UserInterface) => {
         setEditingUser(user);
         setEmail(user.email);
         setUsername(user.username);
         setPassword('');
         setShowModal(true);
+        setRole(user.role ?? 'employee');
     }
 
     return (
@@ -154,6 +153,7 @@ export default function Page() {
                         <tr>
                             <th>Email</th>
                             <th className="w-[120px]">Username</th>
+                            <th>ระดับการใช้งาน</th>
                             <th className="text-right" style={{ width: '100px' }}>&nbsp;</th>
                         </tr>
                     </thead>
@@ -162,6 +162,7 @@ export default function Page() {
                             <tr key={user.id}>
                                 <td>{user.email}</td>
                                 <td>{user.username}</td>
+                                <td>{user.role}</td>
                                 <td className="text-right">
                                     <button className="table-action-btn table-edit-btn mr-2"
                                         onClick={() => handleEdit(user)}
@@ -202,6 +203,15 @@ export default function Page() {
                             <input type="password" className="form-input"
                                 onChange={e => setPassword(e.target.value)}
                             />
+                        </div>
+                        <div className="mb-4">
+                            <label className="block mb-2">ระดับการใช้งาน</label>
+                            <select className="form-input" value={role}
+                                onChange={e => setRole(e.target.value)}
+                            >
+                                <option value="employee">Employee</option>
+                                <option value="admin">Admin</option>
+                            </select>
                         </div>
                         <div className="flex justify-end gap-2">
                             <button type="button" onClick={() => setShowModal(false)}
