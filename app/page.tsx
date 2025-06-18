@@ -21,6 +21,7 @@ export default function Home() {
       const response = await axios.post(url, payload);
 
       if (response.status === 200) {
+        document.cookie = Config.tokenKey + '=' + response.data.token;
         localStorage.setItem(Config.tokenKey, response.data.token);
 
         if (response.data.role == 'admin') {

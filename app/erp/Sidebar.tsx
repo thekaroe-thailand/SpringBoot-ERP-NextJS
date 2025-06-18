@@ -35,7 +35,7 @@ export default function Sidebar() {
             const token = localStorage.getItem(Config.tokenKey);
 
             if (!token) {
-                router.push('/');
+                //router.push('/');
                 return;
             }
 
@@ -70,6 +70,8 @@ export default function Sidebar() {
             })
 
             if (button.isConfirmed) {
+                // remove cookie
+                document.cookie = `${Config.tokenKey}=; path=/; max-age=0`;
                 localStorage.removeItem(Config.tokenKey);
                 router.push('/');
             }
