@@ -34,7 +34,7 @@ export default function Home() {
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'Invalid username or password'
+        text: 'Invalid username or password ' + (err as Error).message
       })
     }
   }
