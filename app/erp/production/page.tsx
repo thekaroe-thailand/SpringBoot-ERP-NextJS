@@ -30,11 +30,11 @@ export default function Productlion() {
             if (response.status === 200) {
                 setProductions(response.data);
             }
-        } catch (err: any) {
+        } catch (err) {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: err.message
+                text: (err as Error).message
             })
         }
     }
@@ -83,7 +83,7 @@ export default function Productlion() {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'ไม่สามารถลบช้อมูลได้ ' + err
+                text: 'ไม่สามารถลบช้อมูลได้ ' + (err as Error).message
             })
         }
     }
@@ -122,7 +122,7 @@ export default function Productlion() {
             Swal.fire({
                 icon: 'error',
                 title: 'Error',
-                text: 'error ' + err
+                text: 'error ' + (err as Error).message
             })
         }
     }
