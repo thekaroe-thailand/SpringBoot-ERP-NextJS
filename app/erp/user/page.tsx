@@ -27,10 +27,10 @@ export default function Page() {
             if (response.status == 200) {
                 setUsers(response.data);
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 title: 'Error',
-                text: error.message,
+                text: (error as Error).message,
                 icon: 'error'
             })
         }
@@ -73,10 +73,10 @@ export default function Page() {
 
                 fetchUsers();
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 title: 'Error',
-                text: error.message,
+                text: (error as Error).message,
                 icon: 'error'
             })
         }
@@ -110,10 +110,10 @@ export default function Page() {
                     fetchUsers();
                 }
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 title: 'Error',
-                text: error.message,
+                text: (error as Error).message,
                 icon: 'error'
             })
         }
