@@ -135,10 +135,10 @@ export default function Formular() {
                     fetchFormulars();
                 }
             }
-        } catch (err: any) {
+        } catch (err) {
             Swal.fire({
                 title: 'error',
-                text: err,
+                text: (err as Error).message,
                 icon: 'error'
             })
         }
