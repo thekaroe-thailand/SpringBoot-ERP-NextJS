@@ -1,5 +1,5 @@
 export const Config = {
-    apiUrl: 'http://localhost:8080',
+    apiUrl: '/api',
     apiKey: '1234567890',
     tokenKey: 'token_erp'
 }
