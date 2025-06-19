@@ -674,7 +674,7 @@ export default function Stock() {
                                             <td>{transferStore.remark}</td>
                                             <td>{new Date(transferStore.createdAt).toLocaleDateString()}</td>
                                             <td>
-                                                <button onClick={(e) => handleDeleteTransfer(transferStore.id)}
+                                                <button onClick={() => handleDeleteTransfer(transferStore.id)}
                                                     className="table-delete-btn table-action-btn">
                                                     <i className="fa fa-trash"></i>
                                                 </button>
