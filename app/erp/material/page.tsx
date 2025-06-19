@@ -27,10 +27,10 @@ export default function MaterialPage() {
             if (response.status == 200) {
                 setMaterials(response.data);
             }
-        } catch (err: any) {
+        } catch (err) {
             Swal.fire({
                 title: 'Error',
-                text: err,
+                text: (err as Error).message,
                 icon: 'error'
             })
         }
@@ -67,10 +67,10 @@ export default function MaterialPage() {
                     timer: 1000
                 })
             }
-        } catch (err: any) {
+        } catch (err) {
             Swal.fire({
                 title: 'Error',
-                text: err,
+                text: (err as Error).message,
                 icon: 'error'
             })
         }
@@ -106,10 +106,10 @@ export default function MaterialPage() {
                     fetchData();
                 }
             }
-        } catch (err: any) {
+        } catch (err) {
             Swal.fire({
                 title: 'Error',
-                text: err,
+                text: (err as Error).message,
                 icon: 'error'
             })
         }
