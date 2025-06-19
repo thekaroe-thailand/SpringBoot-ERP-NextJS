@@ -50,7 +50,7 @@ export default function ProductionLoss() {
     }
 
     const handleSave = async () => {
-        let url = Config.apiUrl + '/api/production-loss';
+        const url = Config.apiUrl + '/api/production-loss';
 
         try {
             const payload = {
