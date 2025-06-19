@@ -70,7 +70,7 @@ export default function ProductionLog() {
     }
 
     const handleSave = async () => {
-        let url = Config.apiUrl + '/api/production-logs';
+        const url = Config.apiUrl + '/api/production-logs';
 
         try {
             const payload = {
