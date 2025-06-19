@@ -25,10 +25,10 @@ export default function BillSale() {
             if (response.status === 200) {
                 setBillSale(response.data);
             }
-        } catch (_) {
+        } catch (err) {
             Swal.fire({
                 title: "Error",
-                text: "Failed to fetch data",
+                text: (err as Error).message,
                 icon: "error"
             });
         }
@@ -43,10 +43,10 @@ export default function BillSale() {
                 setBillSaleDetails(response.data);
                 setShowModal(true);
             }
-        } catch (_) {
+        } catch (err) {
             Swal.fire({
                 title: "Error",
-                text: "Failed to fetch data",
+                text: (err as Error).message,
                 icon: "error"
             });
         }
