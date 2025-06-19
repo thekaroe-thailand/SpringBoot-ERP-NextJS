@@ -101,7 +101,7 @@ export default function Account() {
                                     <td className="text-right">{item.price ?? 0}</td>
                                     <td className="flex justify-center">
                                         <button className="table-edit-btn table-action-btn"
-                                            onClick={(e) => openModal(item.id)}
+                                            onClick={() => openModal(item.id)}
                                         >
                                             <i className="fa fa-pencil"></i>
                                         </button>
