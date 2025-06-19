@@ -3,7 +3,7 @@
 import { Config } from "@/app/Config";
 import { StoreInterface } from "@/app/interface/Storelnterface";
 import axios from "axios";
-import { useEffect, useState, useTransition } from "react";
+import { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import Modal from "../components/Modal";
 import { ProductionInterface } from "@/app/interface/ProductionInterface";
@@ -70,11 +70,11 @@ export default function Stock() {
             if (response.status === 200) {
                 setStoreImports(response.data);
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 icon: 'error',
                 title: 'error',
-                text: error.message
+                text: (error as Error).message
             })
         }
     }
@@ -89,11 +89,11 @@ export default function Stock() {
                 setProductions(response.data);
                 changeProduction(response.data[0].id);
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 icon: 'error',
                 title: 'error',
-                text: error.message
+                text: (error as Error).message
             })
         }
     }
@@ -107,11 +107,11 @@ export default function Stock() {
             if (response.status === 200) {
                 setStores(response.data);
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 icon: 'error',
                 title: 'error',
-                text: error.message
+                text: (error as Error).message
             })
         }
     }
@@ -146,11 +146,11 @@ export default function Stock() {
                 setShowModal(false);
                 fetchStores();
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 icon: 'error',
                 title: 'error',
-                text: error.message
+                text: (error as Error).message
             })
         }
     }
@@ -173,11 +173,11 @@ export default function Stock() {
                 if (response.status === 200) {
                     fetchStores();
                 }
-            } catch (error: any) {
+            } catch (error) {
                 Swal.fire({
                     icon: 'error',
                     title: 'error',
-                    text: error.message
+                    text: (error as Error).message
                 })
             }
         }
@@ -217,11 +217,11 @@ export default function Stock() {
                 setTotalProductionLoss(loss);
                 setTotalProductionFree(free);
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 icon: 'error',
                 title: 'error',
-                text: error.message
+                text: (error as Error).message
             })
         }
     }
@@ -254,11 +254,11 @@ export default function Stock() {
                     timer: 1500
                 })
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 icon: 'error',
                 title: 'error',
-                text: error.message
+                text: (error as Error).message
             })
         }
     }
@@ -277,11 +277,11 @@ export default function Stock() {
 
             try {
                 await axios.delete(url);
-            } catch (error: any) {
+            } catch (error) {
                 Swal.fire({
                     icon: 'error',
                     title: 'error',
-                    text: error.message
+                    text: (error as Error).message
                 })
             }
         }
@@ -336,11 +336,11 @@ export default function Stock() {
                     timer: 500
                 })
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 title: 'error',
                 icon: 'error',
-                text: error.message
+                text: (error as Error).message
             })
         }
     }
@@ -362,11 +362,11 @@ export default function Stock() {
             if (response.status === 200) {
                 setTransferStores(response.data);
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 title: 'error',
                 icon: 'error',
-                text: error.message
+                text: (error as Error).message
             })
         }
     }
@@ -389,11 +389,11 @@ export default function Stock() {
                     fetchDataTransferStore();
                 }
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 title: 'error',
                 icon: 'error',
-                text: error.message
+                text: (error as Error).message
             })
         }
     }
