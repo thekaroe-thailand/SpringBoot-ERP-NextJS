@@ -34,7 +34,7 @@ export default function EditProfile() {
             Swal.fire({
                 icon: 'error',
                 title: 'error',
-                text: 'ไม่สามารถดึงข้อมูลผู้ใช้งานได้'
+                text: 'ไม่สามารถดึงข้อมูลผู้ใช้งานได้ ' + (error as Error).message
             })
         }
     }
@@ -75,7 +75,7 @@ export default function EditProfile() {
             Swal.fire({
                 icon: 'error',
                 title: 'error',
-                text: 'ไม่สามารถแก้ไขข้อมูลได้'
+                text: 'ไม่สามารถแก้ไขข้อมูลได้ ' + (error as Error).message
             })
         }
     }
