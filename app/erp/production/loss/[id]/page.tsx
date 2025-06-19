@@ -2,15 +2,13 @@
 
 import { Config } from "@/app/Config";
 import Modal from "@/app/erp/components/Modal";
-import { ProductionInterface } from "@/app/interface/ProductionInterface"
 import { ProductionLossInterface } from "@/app/interface/ProductionLossInterface";
 import axios from "axios";
-import { redirect, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react"
 import Swal from "sweetalert2";
 
 export default function ProductionLoss() {
-    const [production, setProduction] = useState<ProductionInterface | null>(null);
     const [productionLoss, setProductionLoss] = useState<ProductionLossInterface[]>([]);
     const [showModal, setShowModal] = useState(false);
     const [remark, setRemark] = useState('');
@@ -21,7 +19,6 @@ export default function ProductionLoss() {
     const { id } = useParams();
 
     useEffect(() => {
-        fetchProduction();
         fetchProductionLoss();
     }, []);
 
@@ -31,26 +28,11 @@ export default function ProductionLoss() {
         try {
             const response = await axios.get(url);
             setProductionLoss(response.data);
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 title: 'error',
                 icon: 'error',
-                text: error.message
-            })
-        }
-    }
-
-    const fetchProduction = async () => {
-        const url = Config.apiUrl + '/api/productions/' + id;
-
-        try {
-            const response = await axios.get(url);
-            setProduction(response.data);
-        } catch (error: any) {
-            Swal.fire({
-                title: 'error',
-                icon: 'error',
-                text: error.message
+                text: (error as Error).message
             })
         }
     }
@@ -95,11 +77,11 @@ export default function ProductionLoss() {
                 closeModal();
                 fetchProductionLoss();
             }
-        } catch (error: any) {
+        } catch (error) {
             Swal.fire({
                 title: 'error',
                 icon: 'error',
-                text: error.message
+                text: (error as Error).message
             })
         }
     }
@@ -122,11 +104,11 @@ export default function ProductionLoss() {
                 if (response.status == 200) {
                     fetchProductionLoss();
                 }
-            } catch (error: any) {
+            } catch (error) {
                 Swal.fire({
                     title: 'error',
                     icon: 'error',
-                    text: error.message
+                    text: (error as Error).message
                 })
             }
         }
